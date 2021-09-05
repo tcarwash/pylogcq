@@ -59,7 +59,10 @@ class Logger(npyscreen.NPSAppManaged):
         self.main()
 
     def quit(self, *args):
-        self.s.close()
+        try:
+            self.s.close()
+        except:
+            pass
         sys.exit(0)
 
     def poll(self):
