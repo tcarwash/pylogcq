@@ -3,7 +3,7 @@ import socket
 import json
 from datetime import datetime
 
-class Logger(npyscreen.NPSApp):
+class Logger(npyscreen.NPSAppManaged):
     def __init__(self, logfile="default.log"):
         self.rigctld = False
         self.rmode = ""
@@ -13,12 +13,20 @@ class Logger(npyscreen.NPSApp):
     def setup_rigctld(self, rigctld_server, rigctld_port):
         self.rigctld_server = rigctld_server
         self.rigctld_port = rigctld_port
-        self.rigctld = True
+        try:
+            self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.s.connect((self.rigctld_server, self.rigctld_port))
+            self.rigctld = True
+        except:
+            print('Unable to establish connection')
 
-    def main(self):
+    def main(self, *args):
         if self.rigctld:
             self.poll()
-        self.F = npyscreen.Form(name = "PylogCQ",)
+        self.F = npyscreen.Form(name = "PylogCQ")
+        self.F.add_handlers({"^R": self.main,
+                            })
+
         self.dx = self.F.add(npyscreen.TitleText, name = "Callsign:",)
         self.notes = self.F.add(npyscreen.TitleText, name = "Notes:",)
         self.mode = self.F.add(npyscreen.TitleText, name = "Mode:", value = self.rmode, editable=not self.rigctld)
@@ -28,15 +36,12 @@ class Logger(npyscreen.NPSApp):
         self.logit()
         self.rmode = self.mode.value
         self.rfreq = self.freq.value
-        self.main()
 
     def poll(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((self.rigctld_server, self.rigctld_port))
-        s.sendall(b'm')
-        self.rmode = s.recv(1024).decode("utf-8").split()[0]
-        s.sendall(b'f')
-        self.rfreq = s.recv(1024).decode("utf-8").split()[0]
+        self.s.sendall(b'm')
+        self.rmode = self.s.recv(1024).decode("utf-8").split()[0]
+        self.s.sendall(b'f')
+        self.rfreq = self.s.recv(1024).decode("utf-8").split()[0]
 
     def logit(self):
         log = []
