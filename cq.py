@@ -1,7 +1,22 @@
 import npyscreen
 import socket
 import json
+import sys
 from datetime import datetime
+
+class LogForm(npyscreen.Form):
+    def __init__(self, name, outer_instance):
+        super(LogForm, self).__init__(name)
+        self.outer_instance = outer_instance
+        self.keypress_timeout=10
+
+    def while_waiting(self):
+        self.outer_instance.poll()
+        self.outer_instance.freq.value = self.outer_instance.rfreq
+        self.outer_instance.mode.value = self.outer_instance.rmode
+        self.outer_instance.mode.display()
+        self.outer_instance.freq.display()
+
 
 class Logger(npyscreen.NPSAppManaged):
     def __init__(self, logfile="default.log"):
@@ -23,8 +38,10 @@ class Logger(npyscreen.NPSAppManaged):
     def main(self, *args):
         if self.rigctld:
             self.poll()
-        self.F = npyscreen.Form(name = "PylogCQ")
+        #self.F = npyscreen.Form(name = "PyLogCQ")
+        self.F = LogForm(name = "PyLogCQ", outer_instance=self)
         self.F.add_handlers({"^R": self.main,
+                            "^Q": self.quit,
                             })
 
         self.dx = self.F.add(npyscreen.TitleText, name = "Callsign:",)
@@ -36,6 +53,10 @@ class Logger(npyscreen.NPSAppManaged):
         self.logit()
         self.rmode = self.mode.value
         self.rfreq = self.freq.value
+
+    def quit(self, *args):
+        self.s.close()
+        sys.exit(0)
 
     def poll(self):
         self.s.sendall(b'm')
