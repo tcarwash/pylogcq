@@ -24,7 +24,10 @@ class Logger(npyscreen.NPSApp):
         self.mode = self.F.add(npyscreen.TitleText, name = "Mode:", value = self.rmode, editable=not self.rigctld)
         self.freq = self.F.add(npyscreen.TitleText, name = "Frequency:", value = self.rfreq, editable=not self.rigctld)
         self.F.edit()
+        self.mode.value = self.mode.value.upper()
         self.logit()
+        self.rmode = self.mode.value
+        self.rfreq = self.freq.value
         self.main()
 
     def poll(self):
