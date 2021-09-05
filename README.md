@@ -1,8 +1,8 @@
-#PyLogCQ
-##A simple curses based log for ham radio use
+# PyLogCQ
+## A simple curses based log for ham radio use
 
 
-###Usage 
+### Usage 
 
 usage: cq.py [-h] [-o OUTFILE] [-r RIGSERVER] [-p RIGPORT]
 
