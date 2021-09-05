@@ -11,11 +11,14 @@ class LogForm(npyscreen.Form):
         self.keypress_timeout=10
 
     def while_waiting(self):
-        self.outer_instance.poll()
-        self.outer_instance.freq.value = self.outer_instance.rfreq
-        self.outer_instance.mode.value = self.outer_instance.rmode
-        self.outer_instance.mode.display()
-        self.outer_instance.freq.display()
+        if self.outer_instance.rigctld:
+            self.outer_instance.poll()
+            self.outer_instance.freq.value = self.outer_instance.rfreq
+            self.outer_instance.mode.value = self.outer_instance.rmode
+            self.outer_instance.mode.display()
+            self.outer_instance.freq.display()
+        else:
+            pass
 
 
 class Logger(npyscreen.NPSAppManaged):
@@ -53,6 +56,7 @@ class Logger(npyscreen.NPSAppManaged):
         self.logit()
         self.rmode = self.mode.value
         self.rfreq = self.freq.value
+        self.main()
 
     def quit(self, *args):
         self.s.close()
