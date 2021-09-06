@@ -48,6 +48,8 @@ class Logger(npyscreen.NPSAppManaged):
                             })
 
         self.dx = self.F.add(npyscreen.TitleText, name = "Callsign:",)
+        self.tx = self.F.add(npyscreen.TitleText, name = "Tx RPT:")
+        self.rx = self.F.add(npyscreen.TitleText, name = "Rx RPT:")
         self.notes = self.F.add(npyscreen.TitleText, name = "Notes:",)
         self.mode = self.F.add(npyscreen.TitleText, name = "Mode:", value = self.rmode, editable=not self.rigctld)
         self.freq = self.F.add(npyscreen.TitleText, name = "Frequency:", value = self.rfreq, editable=not self.rigctld)
@@ -84,11 +86,24 @@ class Logger(npyscreen.NPSAppManaged):
             f = open(self.logfile, "w+")
             f.close()
 
-        log.append({"dx": self.dx.value.upper(), 
+
+        log_entry = {"dx": self.dx.value.upper().split(' ')[0],
                     "mode": self.mode.value, 
                     "frequency": self.freq.value,
                     "time": datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S"),
-                    }) 
+                    "notes": " ".join(self.dx.value.split(' ')[1:]) + ' ' + self.notes.value
+                    } 
+        if len(self.tx.value) > 1:
+            log_entry['tx'] = self.tx.value
+        else:
+            log_entry['tx'] = '599'
+
+        if len(self.rx.value) > 1:
+            log_entry['rx'] = self.rx.value
+        else:
+            log_entry['rx'] = '599'
+
+        log.append(log_entry)
 
         with open(self.logfile, "w") as f:
             f.write(json.dumps(log))
