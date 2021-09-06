@@ -45,6 +45,7 @@ class Logger(npyscreen.NPSAppManaged):
         self.F = LogForm(name = "PyLogCQ", outer_instance=self)
         self.F.add_handlers({"^R": self.main,
                             "^Q": self.quit,
+                            "^W": self.savenow,
                             })
 
         self.dx = self.F.add(npyscreen.TitleText, name = "Callsign:",)
@@ -58,6 +59,10 @@ class Logger(npyscreen.NPSAppManaged):
         self.logit()
         self.rmode = self.mode.value
         self.rfreq = self.freq.value
+        self.main()
+
+    def savenow(self, *args):
+        self.logit()
         self.main()
 
     def quit(self, *args):
