@@ -41,7 +41,6 @@ class Logger(npyscreen.NPSAppManaged):
     def main(self, *args):
         if self.rigctld:
             self.poll()
-        #self.F = npyscreen.Form(name = "PyLogCQ")
         self.F = LogForm(name = "PyLogCQ", outer_instance=self)
         self.F.add_handlers({"^R": self.main,
                             "^Q": self.quit,
