@@ -7,9 +7,9 @@ def load(file):
 
 def to_csv(json_log):
     log = json_log
-    out = "time, dx, frequency, mode, notes\n"
+    out = "time, dx, tx, rx, frequency, mode, notes\n"
     for qso in log:
-        out += "{}, {}, {}, {}, {}, {}, {}\n".format(qso.get('time'), qso.get('dx'), qso.get('tx'),  qso.get('rx'), so.get('frequency'), qso.get('mode'), qso.get('notes'))
+        out += "{}, {}, {}, {}, {}, {}, {}\n".format(qso.get('time'), qso.get('dx'), qso.get('tx'),  qso.get('rx'), qso.get('frequency'), qso.get('mode'), qso.get('notes'))
     print(out)
 
 
