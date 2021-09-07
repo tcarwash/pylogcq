@@ -90,7 +90,8 @@ class Logger(npyscreen.NPSAppManaged):
             f = open(self.logfile, "w+")
             f.close()
 
-
+        if self.mode.value == "CWR":
+            self.mode.value = "CW"
         log_entry = {"dx": self.dx.value.upper().split(' ')[0],
                     "mode": self.mode.value, 
                     "frequency": self.freq.value,
