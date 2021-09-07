@@ -94,7 +94,8 @@ class Logger(npyscreen.NPSAppManaged):
         log_entry = {"dx": self.dx.value.upper().split(' ')[0],
                     "mode": self.mode.value, 
                     "frequency": self.freq.value,
-                    "time": datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S"),
+                    "time": datetime.utcnow().strftime("%H%M%S"),
+                    "date": datetime.utcnow().strftime("%Y%m%d"),
                     "notes": " ".join(self.dx.value.split(' ')[1:]) + ' ' + self.notes.value
                     } 
         if len(self.tx.value) > 1:

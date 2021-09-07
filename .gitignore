@@ -2,5 +2,7 @@ venv/*
 dist/*
 *.pyc
 *.log
+*.csv
+*.adi
 
 *.swp
