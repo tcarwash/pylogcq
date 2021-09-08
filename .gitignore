@@ -1,8 +1,10 @@
 venv/*
 dist/*
+*egg*
 *.pyc
 *.log
 *.csv
 *.adi
+*__pycache__*
 
 *.swp

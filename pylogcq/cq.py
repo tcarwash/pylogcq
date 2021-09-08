@@ -113,9 +113,7 @@ class Logger(npyscreen.NPSAppManaged):
 
         with open(self.logfile, "w") as f:
             f.write(json.dumps(log))
-
-
-if __name__ == "__main__":
+def main():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--outfile", help="Output log filename")
@@ -134,3 +132,7 @@ if __name__ == "__main__":
         App.setup_rigctld(rigctld_server=rcs, rigctld_port=rcp)
 
     App.run()
+
+
+if __name__ == "__main__":
+    main()
