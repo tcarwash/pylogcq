@@ -1,10 +1,12 @@
-import json 
+import json
 
-def load(file): 
-    with open(file, 'r') as f: 
-        data = json.load(f) 
+
+def load(file):
+    with open(file, "r") as f:
+        data = json.load(f)
 
     return data
+
 
 def get_band(frequency):
     frequency = int(frequency)
@@ -46,24 +48,44 @@ def to_csv(json_log):
     log = json_log
     out = "time, dx, tx, rx, frequency, mode, notes\n"
     for qso in log:
-        out += "{}, {}, {}, {}, {}, {}, {}\n".format(qso.get('time'), qso.get('dx'), qso.get('tx'),  qso.get('rx'), qso.get('frequency'), qso.get('mode'), qso.get('notes'))
+        out += "{}, {}, {}, {}, {}, {}, {}\n".format(
+            qso.get("time"),
+            qso.get("dx"),
+            qso.get("tx"),
+            qso.get("rx"),
+            qso.get("frequency"),
+            qso.get("mode"),
+            qso.get("notes"),
+        )
     return out
+
 
 def to_adif(json_log):
     log = json_log
     out = "#ADIF Created by PyLogCQ\n<ADIF_VERS:5>3.1.0 <PROGRAMID:7>PyLogCQ <eoh>\n\n"
     for qso in log:
-        freq = qso.get('frequency')
+        freq = qso.get("frequency")
         band = get_band(freq)
-        out += "<CALL:{}>{}<FREQ:{}>{}<RST_SENT:{}>{}<RST_RCVD:{}>{}<MODE:{}>{}<COMMENT:{}>{}<TIME_OFF:{}>{}<QSO_DATE:{}>{}<BAND:{}>{}<eor>\n".format(len(qso.get('dx')), qso.get('dx'), 
-                                                    len(freq), freq, 
-                                                    len(qso.get('tx')), qso.get('tx'), 
-                                                    len(qso.get('rx')), qso.get('rx'), 
-                                                    len(qso.get('mode')), qso.get('mode'), 
-                                                    len(qso.get('notes')), qso.get('notes'), 
-                                                    len(qso.get('time')), qso.get('time'), 
-                                                    len(qso.get('date')), qso.get('date'),
-                                                    len(band), band)
+        out += "<CALL:{}>{}<FREQ:{}>{}<RST_SENT:{}>{}<RST_RCVD:{}>{}<MODE:{}>{}<COMMENT:{}>{}<TIME_OFF:{}>{}<QSO_DATE:{}>{}<BAND:{}>{}<eor>\n".format(
+            len(qso.get("dx")),
+            qso.get("dx"),
+            len(freq),
+            freq,
+            len(qso.get("tx")),
+            qso.get("tx"),
+            len(qso.get("rx")),
+            qso.get("rx"),
+            len(qso.get("mode")),
+            qso.get("mode"),
+            len(qso.get("notes")),
+            qso.get("notes"),
+            len(qso.get("time")),
+            qso.get("time"),
+            len(qso.get("date")),
+            qso.get("date"),
+            len(band),
+            band,
+        )
 
     return out
 
@@ -77,22 +99,25 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--outfile", help="Output log filename")
-    parser.add_argument("-f", "--file", help="Input File")
+    parser.add_argument(
+        "-o", "--outfile", required=True, help="Output log filename"
+    )
+    parser.add_argument("logfile", help="Input File")
     args = parser.parse_args()
 
-    logfile = load(args.file)
+    logfile = load(args.logfile)
 
-    format_map = {'csv': to_csv, 'adi': to_adif}
+    format_map = {"csv": to_csv, "adi": to_adif}
 
-    if get_ext(args.file) != 'log':
+    if get_ext(args.logfile) != "log":
         print("Must be a pylogc .log file")
         quit()
 
-    ext = get_ext(args.outfile) 
+    ext = get_ext(args.outfile)
     conv_func = format_map.get(ext)
-    with open(args.outfile, 'w') as f:
+    with open(args.outfile, "w") as f:
         f.write(conv_func(logfile))
-    
+
+
 if __name__ == "__main__":
     main()
