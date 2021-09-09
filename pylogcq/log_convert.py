@@ -73,7 +73,7 @@ def get_ext(filename):
     return ext
 
 
-if __name__ == "__main__":
+def main():
     import argparse
 
     parser = argparse.ArgumentParser()
@@ -93,3 +93,6 @@ if __name__ == "__main__":
     conv_func = format_map.get(ext)
     with open(args.outfile, 'w') as f:
         f.write(conv_func(logfile))
+    
+if __name__ == "__main__":
+    main()
