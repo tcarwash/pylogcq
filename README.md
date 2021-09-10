@@ -9,6 +9,7 @@ If PyLogCQ is not being used with `rigctld` PyLogCQ will retain frequency and mo
 
 ### Usage
 
+```
 Usage: cq [-h] [-o OUTFILE] [-r RIGSERVER] [-p RIGPORT]
 
 optional arguments:
@@ -19,7 +20,10 @@ optional arguments:
                         Rigctld server address
   -p RIGPORT, --rigport RIGPORT
                         Rigctld server port
+```
 
 ### Keyboard Shortcuts
+| Command | Description |
+|---|---|
 | Ctrl-Q | Quit |
 | Ctrl-W | Write QSO to log |
