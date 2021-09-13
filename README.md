@@ -29,3 +29,4 @@ optional arguments:
 |---|---|
 | Ctrl-Q | Quit |
 | Ctrl-W | Write QSO to log |
+| Ctrl-R | Clear current entry and start over |
