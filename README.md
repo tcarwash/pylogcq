@@ -29,4 +29,5 @@ optional arguments:
 |---|---|
 | Ctrl-Q | Quit |
 | Ctrl-W | Write QSO to log |
-| Ctrl-R | Clear current entry and start over |
+| Ctrl-R | Clear current view and start over at log entry form |
+| Ctrl-L | Open log viewer|
