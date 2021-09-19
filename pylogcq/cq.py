@@ -184,7 +184,8 @@ class Logger(npyscreen.NPSAppManaged):
         try:
             self.s.close()
         except AttributeError:
-            sys.exit(0)
+            pass
+        sys.exit(0)
 
     def poll(self):
         self.s.sendall(b"m")
