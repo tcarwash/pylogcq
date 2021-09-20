@@ -9,6 +9,7 @@ If PyLogCQ is not being used with `rigctld` PyLogCQ will retain frequency and mo
 ### Installation
 `pip install pylogcq-tcarwash`
 
+**Suggested** Create an alias for `cq='cq -o desired-log.log'` *add `-r` and `-p` if you have a rigctld server you always use*
 ### Usage
 
 ```
