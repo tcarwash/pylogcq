@@ -3,6 +3,8 @@ import curses
 import socket
 import json
 import sys
+import os
+from pylogcq import log_convert
 from datetime import datetime
 
 
@@ -28,11 +30,7 @@ class ViewForm(npyscreen.Form):
                 "rx": "NA",
             }
         ]
-        try:
-            with open(self.outer_instance.logfile, "r") as f:
-                log = json.load(f)
-        except IOError:
-            pass
+        log = self.outer_instance.log
         displayStr = (
             "time: {} {}, dx: {}, tx RST: {}, rx RST: {}, freq: {}, mode: {}"
         )
@@ -66,8 +64,8 @@ class LogForm(npyscreen.Form):
                 "^Q": self.outer_instance.quit,
             }
         )
-        self.rmode = ""
-        self.rfreq = ""
+        self.rmode = self.outer_instance.rmode
+        self.rfreq = self.outer_instance.rfreq
 
     def while_waiting(self):
         if self.outer_instance.rigctld:
@@ -96,25 +94,23 @@ class LogForm(npyscreen.Form):
             value=self.rfreq,
             editable=not self.outer_instance.rigctld,
         )
-        self.mode.value = self.mode.value.upper()
-        self.rmode = self.mode.value
-        self.rfreq = self.freq.value
 
     def savenow(self, *args):
+        self.outer_instance.rmode = self.mode.value.upper()
+        self.outer_instance.rfreq = self.freq.value
         self.logit()
         self.outer_instance.main()
 
     def logit(self, *args):
-        log = []
         try:
-            f = open(self.outer_instance.logfile, "r")
+            f = open(self.outer_instance.logfile + ".swp", "r")
             try:
-                log = json.load(f)
+                self.outer_instance.log = json.load(f)
             except json.decoder.JSONDecodeError:
                 pass
             f.close()
         except IOError:
-            f = open(self.outer_instance.logfile, "w+")
+            f = open(self.outer_instance.logfile + ".swp", "w+")
             f.close()
 
         if self.mode.value == "CWR":
@@ -139,16 +135,27 @@ class LogForm(npyscreen.Form):
         else:
             log_entry["rx"] = "599"
 
-        log.append(log_entry)
+        self.outer_instance.log.append(log_entry)
 
-        with open(self.outer_instance.logfile, "w") as f:
-            f.write(json.dumps(log))
+        with open(self.outer_instance.logfile + ".swp", "w") as f:
+            f.write(json.dumps(self.outer_instance.log))
 
 
 class Logger(npyscreen.NPSAppManaged):
-    def __init__(self, logfile="default.log"):
+    def __init__(self, swap, logfile="default.log"):
         self.rigctld = False
         self.logfile = logfile
+        self.rmode = ""
+        self.rfreq = ""
+        if os.path.isfile(self.logfile):
+            self.log = log_convert.from_adif(self.logfile)
+        else:
+            self.log = []
+        if swap:
+            with open(self.logfile + ".swp", "r") as f:
+                log_recovery = json.load(f)
+                for item in log_recovery:
+                    self.log.append(item)
 
     def setup_rigctld(self, rigctld_server, rigctld_port):
         self.rigctld_server = rigctld_server
@@ -171,19 +178,24 @@ class Logger(npyscreen.NPSAppManaged):
         self.F = LogForm(name="PyLogCQ", outer_instance=self)
         self.F.main()
         self.F.edit()
-        self.mode = self.F.mode
-        self.freq = self.F.freq
-        self.dx = self.F.dx
-        self.rx = self.F.rx
-        self.tx = self.F.tx
-        self.notes = self.F.notes
-        self.F.logit()
-        self.main()
+        self.F.savenow()
 
     def quit(self, *args):
         try:
             self.s.close()
         except AttributeError:
+            pass
+        with open(self.logfile + ".swp", "w") as f:
+            f.write(json.dumps(self.log))
+        try:
+            with open(self.logfile, "w") as f:
+                f.write(
+                    log_convert.to_adif(
+                        log_convert.load(self.logfile + ".swp")
+                    )
+                )
+            os.remove(self.logfile + ".swp")
+        except FileNotFoundError:
             pass
         sys.exit(0)
 
@@ -203,10 +215,16 @@ def main():
     parser.add_argument("-p", "--rigport", help="Rigctld server port")
     args = parser.parse_args()
 
+    def chkswp(logfile):
+        if os.path.isfile(logfile + ".swp"):
+            return True
+        else:
+            return False
+
     if args.outfile:
-        App = Logger(logfile=args.outfile)
+        App = Logger(logfile=args.outfile, swap=chkswp(args.outfile))
     else:
-        App = Logger()
+        App = Logger(swap=chkswp("default.log"))
 
     if args.rigserver and args.rigport:
         rcs = args.rigserver

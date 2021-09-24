@@ -1,4 +1,5 @@
 import json
+import adif_io
 
 
 def load(file):
@@ -88,6 +89,21 @@ def to_adif(json_log):
         )
 
     return out
+
+
+def from_adif(filename):
+    qsos, header = adif_io.read_from_file(filename)
+    for qso in qsos:
+        qso["frequency"] = qso.pop("FREQ")
+        qso["tx"] = qso.pop("RST_SENT")
+        qso["dx"] = qso.pop("CALL")
+        qso["rx"] = qso.pop("RST_RCVD")
+        qso["mode"] = qso.pop("MODE")
+        qso["notes"] = qso.pop("COMMENT")
+        qso["date"] = qso.pop("QSO_DATE")
+        qso["time"] = qso.pop("TIME_OFF")
+
+    return qsos
 
 
 def get_ext(filename):
