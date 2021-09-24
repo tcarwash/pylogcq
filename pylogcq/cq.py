@@ -64,8 +64,8 @@ class LogForm(npyscreen.Form):
                 "^Q": self.outer_instance.quit,
             }
         )
-        self.rmode = ""
-        self.rfreq = ""
+        self.rmode = self.outer_instance.rmode
+        self.rfreq = self.outer_instance.rfreq
 
     def while_waiting(self):
         if self.outer_instance.rigctld:
@@ -94,11 +94,10 @@ class LogForm(npyscreen.Form):
             value=self.rfreq,
             editable=not self.outer_instance.rigctld,
         )
-        self.mode.value = self.mode.value.upper()
-        self.rmode = self.mode.value
-        self.rfreq = self.freq.value
 
     def savenow(self, *args):
+        self.outer_instance.rmode = self.mode.value.upper()
+        self.outer_instance.rfreq = self.freq.value
         self.logit()
         self.outer_instance.main()
 
@@ -146,6 +145,8 @@ class Logger(npyscreen.NPSAppManaged):
     def __init__(self, swap, logfile="default.log"):
         self.rigctld = False
         self.logfile = logfile
+        self.rmode = ""
+        self.rfreq = ""
         if os.path.isfile(self.logfile):
             self.log = log_convert.from_adif(self.logfile)
         else:
@@ -177,14 +178,7 @@ class Logger(npyscreen.NPSAppManaged):
         self.F = LogForm(name="PyLogCQ", outer_instance=self)
         self.F.main()
         self.F.edit()
-        self.mode = self.F.mode
-        self.freq = self.F.freq
-        self.dx = self.F.dx
-        self.rx = self.F.rx
-        self.tx = self.F.tx
-        self.notes = self.F.notes
-        self.F.logit()
-        self.main()
+        self.F.savenow()
 
     def quit(self, *args):
         try:
