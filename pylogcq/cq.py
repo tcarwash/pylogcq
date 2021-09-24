@@ -4,10 +4,10 @@ import socket
 import json
 import sys
 import os
-import log_convert
+from . import log_convert
 from datetime import datetime
 
-version = "0.7.3"
+version = "0.7.6"
 
 
 class ViewForm(npyscreen.Form):

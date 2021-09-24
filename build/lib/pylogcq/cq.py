@@ -4,8 +4,10 @@ import socket
 import json
 import sys
 import os
-from pylogcq import log_convert
+from . import log_convert
 from datetime import datetime
+
+version = "0.7.6"
 
 
 class ViewForm(npyscreen.Form):
@@ -213,7 +215,14 @@ def main():
     parser.add_argument("-o", "--outfile", help="Output log filename")
     parser.add_argument("-r", "--rigserver", help="Rigctld server address")
     parser.add_argument("-p", "--rigport", help="Rigctld server port")
+    parser.add_argument(
+        "-v", "--version", action="store_true", help="Print Version"
+    )
     args = parser.parse_args()
+
+    if args.version:
+        print(version)
+        sys.exit(0)
 
     def chkswp(logfile):
         if os.path.isfile(logfile + ".swp"):
