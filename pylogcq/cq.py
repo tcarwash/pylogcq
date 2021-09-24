@@ -4,7 +4,7 @@ import socket
 import json
 import sys
 import os
-import log_convert
+from pylogcq import log_convert
 from datetime import datetime
 
 
