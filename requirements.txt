@@ -1,1 +1,2 @@
+adif-io==0.0.3
 npyscreen==4.10.5
