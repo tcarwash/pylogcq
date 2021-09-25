@@ -7,7 +7,7 @@ import os
 from . import log_convert
 from datetime import datetime
 
-version = "0.7.6"
+version = "0.8.0"
 
 
 class ViewForm(npyscreen.Form):
