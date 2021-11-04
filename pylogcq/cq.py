@@ -4,10 +4,11 @@ import socket
 import json
 import sys
 import os
+from importlib import metadata
 from . import log_convert
 from datetime import datetime
 
-version = "0.8.7"
+__version__ = metadata.version("pylogcq")
 
 
 class ViewForm(npyscreen.Form):
@@ -221,7 +222,7 @@ def main():
     args = parser.parse_args()
 
     if args.version:
-        print(version)
+        print(__version__)
         sys.exit(0)
 
     def chkswp(logfile):
