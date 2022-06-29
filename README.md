@@ -1,4 +1,5 @@
 # PyLogCQ
+![PyPI Version](https://img.shields.io/pypi/v/pylogcq) ![GitHub Workflow Status (event)](https://img.shields.io/github/workflow/status/tcarwash/pylogcq/Build%20Python%20Package) ![PyPI - Downloads](https://img.shields.io/pypi/dm/pylogcq) 
 ## A simple curses based log for ham radio use
 PyLogCQ is my attempt at a simple, easy to use and hopefully useful terminal based logging program for amateur (ham) radio use.
 
