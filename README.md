@@ -7,6 +7,8 @@ PyLogCQ will read Frequency and Mode from a [Hamlib](https://github.com/Hamlib/H
 
 If PyLogCQ is not being used with `rigctld` PyLogCQ will retain frequency and mode between logged QSOs unless changed, assuming you haven't changed mode/frequency unless you tell it you have.
 
+![pylogcq screenshot](screenshot.png)
+
 ### Installation
 `pip install pylogcq-tcarwash`
 
